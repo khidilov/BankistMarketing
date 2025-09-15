@@ -1,0 +1,125 @@
+'use strict';
+
+const btnScroll = document.querySelector('.btn--scroll-to');
+const section1 = document.getElementById('section--1');
+const s1Coordinates = section1.getBoundingClientRect();
+const modal = document.querySelector('.modal');
+const overlay = document.querySelector('.overlay');
+const btnCloseModal = document.querySelector('.btn--close-modal');
+const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const header = document.querySelector('.header');
+const message = document.createElement('div');
+
+///////////////////////////////////////
+// Modal window
+
+const openModal = function (e) {
+  e.preventDefault();
+  modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+};
+
+const closeModal = function () {
+  modal.classList.add('hidden');
+  overlay.classList.add('hidden');
+};
+
+// Sildim, çünki bunun yerinə foreach istifadə etdim.
+
+// for (let i = 0; i < btnsOpenModal.length; i++)
+//   btnsOpenModal[i].addEventListener('click', openModal);
+
+btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
+
+btnCloseModal.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+    closeModal();
+  }
+});
+message.classList.add('cookie-message');
+message.innerHTML =
+  'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie"> Got it! </button>';
+
+header.append(message);
+
+// Cookie bildirişinin silinməsi
+
+document
+  .querySelector('.btn--close-cookie')
+  .addEventListener('click', () => message.remove());
+
+// Cookie mesajının stilizasiyası
+message.style.backgroundColor = '#37383d';
+message.style.width = '120%';
+const messageHeight = getComputedStyle(message).height;
+message.style.height = Number.parseFloat(messageHeight) + 30 + 'px';
+
+// Scroll
+
+btnScroll.addEventListener('click', e => {
+  e.preventDefault();
+
+  section1.scrollIntoView({ behavior: 'smooth' });
+
+  // Köhnə üsuldur, həm də burda koordinatları bir-bir hesablamaq lazımdır. Bu arada Jonas öz dərsində bu koordinatlarla yanaşı cari scroll vəziyyətini də key-lərə əlavə edirdi məs.: top: s1Coordinates.top + window.scrollY amma məndə bu düz işləmir, niyə? Sualın cavabını tapdım. Sən demə, koordinatları event listener-dən çöldə təyin etdikdə cari scroll-u əlavə etməyə ehtiyac qalmır, niyə?
+
+  /*
+  window.scrollTo({
+    left: s1Coordinates.left + window.scrollX,
+    top: s1Coordinates.top + window.scrollY,
+    behavior: 'smooth',
+  });
+  */
+});
+
+// Page Navigation
+
+// Bu üsulu istifadə etsəm də, düzgün deyil, çünki hər bir link üçün ayrıca event listener yaranmış olur, daha müasir üsul: Event delegation-dur
+/*
+document.querySelectorAll('.nav__link').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    console.log(e.target.getAttribute('href'));
+    document
+      .querySelector(e.target.getAttribute('href'))
+      .scrollIntoView({ behavior: 'smooth' });
+  });
+});
+*/
+
+document.querySelector('.nav__links').addEventListener('click', e => {
+  e.preventDefault();
+
+  if (e.target.classList.contains('nav__link')) {
+    document
+      .querySelector(e.target.getAttribute('href'))
+      .scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+/*
+///////////////////////////////////
+///////////////////////////////////
+///////////////////////////////////
+///////////////////////////////////
+///////////////////////////////////
+// Root-dakı rəngin dəyişdirilməsi
+document.documentElement.style.setProperty('--color-primary', 'pink');
+
+// Elementin atributlarına müdaxilə
+const logo = document.querySelector('.nav__logo');
+logo.setAttribute('alt', 'Beatuful minimalistic logo of Bankist company');
+
+// Eventin propoqandası, bubbling, capturing
+/*
+const ranNum = (min, max) => Math.floor(Math.random() * max - min + 1 + min);
+const ranCl = () =>
+  `rgb(${ranNum(0, 255)},${ranNum(0, 255)},${ranNum(0, 255)}) `;
+
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  this.style.backgroundColor = ranCl();
+});
+*/
