@@ -100,6 +100,27 @@ document.querySelector('.nav__links').addEventListener('click', e => {
   }
 });
 
+// A tabbed component
+
+const tabs = document.querySelectorAll('.operations__tab');
+const tabParent = document.querySelector('.operations__tab-container');
+const tabContents = document.querySelectorAll('.operations__content');
+
+tabParent.addEventListener('click', t => {
+  const clicked = t.target.closest('.operations__tab');
+
+  if (!clicked) return;
+  // Klik olunmayan məzmunların silinməsi
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabContents.forEach(c => c.classList.remove('operations__content--active'));
+
+  // Klik edilən məzmunun görünməsi
+
+  clicked.classList.add('operations__tab--active');
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
 /*
 ///////////////////////////////////
 ///////////////////////////////////
@@ -122,4 +143,18 @@ const ranCl = () =>
 document.querySelector('.nav__link').addEventListener('click', function (e) {
   this.style.backgroundColor = ranCl();
 });
+*/
+
+// DOM traversing
+/*
+const h1 = document.querySelector('h1');
+console.log(h1.childNodes);
+console.log(h1.children);
+console.log(h1.parentElement);
+console.log(h1.parentNode);
+console.log(h1.nextElementSibling);
+console.log(h1.previousElementSibling);
+
+h1.firstElementChild.style.color = 'red';
+h1.lastElementChild.style.color = 'green';
 */
