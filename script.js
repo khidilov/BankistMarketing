@@ -9,6 +9,10 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const header = document.querySelector('.header');
 const message = document.createElement('div');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabParent = document.querySelector('.operations__tab-container');
+const tabContents = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
 
 ///////////////////////////////////////
 // Modal window
@@ -102,10 +106,6 @@ document.querySelector('.nav__links').addEventListener('click', e => {
 
 // A tabbed component
 
-const tabs = document.querySelectorAll('.operations__tab');
-const tabParent = document.querySelector('.operations__tab-container');
-const tabContents = document.querySelectorAll('.operations__content');
-
 tabParent.addEventListener('click', t => {
   const clicked = t.target.closest('.operations__tab');
 
@@ -121,6 +121,50 @@ tabParent.addEventListener('click', t => {
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add('operations__content--active');
 });
+
+// Implementing navbar fade-in fade-out
+
+// Jonas's solution
+
+const opacityHandler = function (e, op) {
+  if (e.target.classList.contains('nav__link')) {
+    let link = e.target;
+    const logo = document.querySelector('.nav__logo');
+    let navlinks = link.closest('.nav').querySelectorAll('.nav__link');
+    console.log(navlinks);
+    navlinks.forEach(e => {
+      if (e !== link) {
+        e.style.opacity = this;
+      }
+      logo.style.opacity = this;
+    });
+  }
+};
+
+nav.addEventListener('mouseover', opacityHandler.bind(0.5));
+nav.addEventListener('mouseout', opacityHandler.bind(1));
+
+// Alternative solution
+
+// const handleHover = function (o) {
+//   return function (e) {
+//     if (e.target.classList.contains('nav__link')) {
+//       let link = e.target;
+//       const logo = document.querySelector('.nav__logo');
+//       let navlinks = link.closest('.nav').querySelectorAll('.nav__link');
+
+//       navlinks.forEach(e => {
+//         if (e !== link) {
+//           e.style.opacity = o;
+//         }
+//         logo.style.opacity = o;
+//       });
+//     }
+//   };
+// };
+// nav.addEventListener('mouseover', handleHover(0.5));
+// nav.addEventListener('mouseout', handleHover(1));
+
 /*
 ///////////////////////////////////
 ///////////////////////////////////
