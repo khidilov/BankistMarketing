@@ -165,6 +165,46 @@ nav.addEventListener('mouseout', opacityHandler.bind(1));
 // nav.addEventListener('mouseover', handleHover(0.5));
 // nav.addEventListener('mouseout', handleHover(1));
 
+// Implementing sticky navigation bar
+// Yaxşı praktika deyil, optimizasiya üçün çox pisdir, çünki hər cüzi scroll-da işləmək məcburiyyətindədir.
+
+// window.addEventListener('scroll', e => {
+//   window.scrollY > s1Coordinates.top
+//     ? nav.classList.add('sticky')
+//     : nav.classList.remove('sticky');
+// });
+
+// Nümunə
+/*
+const obsCallback = (entries, observer) => {
+  entries.forEach(entry => {
+    console.log(entry);
+  });
+};
+const obsOptions = {
+  root: null,
+  threshold: 0.1,
+};
+const observer = new IntersectionObserver(obsCallback, obsOptions);
+observer.observe(header);
+*/
+
+const navHeight = nav.getBoundingClientRect().height;
+
+// Intersection Observer API tədbiqi
+const stickyNav = entries => {
+  const [entry] = entries;
+  console.log(entry);
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-  ${navHeight}px`,
+});
+headerObserver.observe(header);
+
 /*
 ///////////////////////////////////
 ///////////////////////////////////
