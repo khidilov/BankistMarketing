@@ -131,7 +131,7 @@ const opacityHandler = function (e, op) {
     let link = e.target;
     const logo = document.querySelector('.nav__logo');
     let navlinks = link.closest('.nav').querySelectorAll('.nav__link');
-    console.log(navlinks);
+
     navlinks.forEach(e => {
       if (e !== link) {
         e.style.opacity = this;
@@ -224,6 +224,119 @@ allSections.forEach(section => {
   section.classList.add('section--hidden');
   sectionObserver.observe(section);
 });
+
+// Implementing lazy image download
+
+const lazyImages = document.querySelectorAll('img[data-src]');
+console.log(lazyImages);
+
+const imgLoad = (entries, observer) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.src = entry.target.dataset.src;
+    entry.target.addEventListener('load', () => {
+      entry.target.classList.remove('lazy-img');
+    });
+    imgObserver.unobserve(entry.target);
+  });
+};
+
+const imgObserver = new IntersectionObserver(imgLoad, {
+  root: null,
+  threshold: 0,
+});
+
+lazyImages.forEach(img => imgObserver.observe(img));
+
+// Implementing slider
+
+const slides = document.querySelectorAll('.slide');
+const slider = document.querySelector('.slider');
+const btnRight = document.querySelector('.slider__btn--right');
+const btnLeft = document.querySelector('.slider__btn--left');
+let currSlide = 0;
+const maxSlide = slides.length;
+console.log(slider);
+const dotBox = document.querySelector('.dots');
+// Slider div-ləri bir-birinin üstündə olduqları üçün bununlar onları yanaşı çəkirik.
+// slider.style.overflow = 'visible';
+// slides.forEach((sl, i) => {
+//   sl.style.transform = `translateX(${i * 100}%)`;
+// });
+
+const goToSlide = slide => {
+  slides.forEach((sl, i) => {
+    sl.style.transform = `translateX(${(i - slide) * 100}%)`;
+  });
+};
+
+goToSlide(0);
+
+const sliderBothSides = o => {
+  return function () {
+    if (o) {
+      currSlide = (currSlide + 1) % maxSlide;
+    } else {
+      currSlide = (currSlide + maxSlide - 1) % maxSlide;
+    }
+    goToSlide(currSlide);
+    actDot(currSlide);
+  };
+};
+
+const nextSlide = sliderBothSides(true);
+const prevSlide = sliderBothSides(false);
+
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
+
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  else {
+    e.key === 'ArrowRight' && nextSlide(e);
+    e.key === 'ArrowLeft' && prevSlide(e);
+  }
+  actDot(currSlide);
+});
+slides.forEach((_, i) => {
+  dotBox.insertAdjacentHTML(
+    'beforeend',
+    `<button class="dots__dot" data-slide="${i}"><span class="hidden-text"></span></button>`
+  );
+});
+const dots = document.querySelectorAll('.dots__dot');
+dotBox.addEventListener('click', e => {
+  if (!e.target.closest('.dots__dot')) return;
+
+  currSlide = e.target.dataset.slide;
+  console.log(currSlide);
+  goToSlide(currSlide);
+});
+
+const actDot = () => {
+  dots.forEach((d, i) => {
+    d.classList.remove('dots__dot--active');
+    document
+      .querySelector(`.dots__dot[data-slide="${currSlide}"]`)
+      .classList.add('dots__dot--active');
+  });
+};
+actDot();
+/*
+const nextSlide = () => {
+  currSlide !== slides.length - 1 ? currSlide++ : (currSlide = 0);
+  goToSlide(currSlide);
+};
+
+const prevSlide = () => {
+  currSlide !== 0 ? currSlide-- : (currSlide = slides.length - 1);
+  goToSlide(currSlide);
+};
+
+btnRight.addEventListener('click', nextSlide);
+
+btnLeft.addEventListener('click', prevSlide);
+*/
 
 /*
 ///////////////////////////////////
